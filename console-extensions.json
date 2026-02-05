@@ -1,0 +1,42 @@
+[
+  {
+    "type": "console.page/route",
+    "properties": {
+      "exact": true,
+      "path": "/upgrade-planner",
+      "component": {
+        "$codeRef": "UpgradePlannerPage.default"
+      }
+    }
+  },
+  {
+    "type": "console.page/route",
+    "properties": {
+      "exact": true,
+      "path": "/upgrade-planner/lifecycle",
+      "component": {
+        "$codeRef": "LifecycleDashboard.default"
+      }
+    }
+  },
+  {
+    "type": "console.page/route",
+    "properties": {
+      "exact": true,
+      "path": "/upgrade-planner/operator/:namespace/:name",
+      "component": {
+        "$codeRef": "OperatorDetailPage.default"
+      }
+    }
+  },
+  {
+    "type": "console.navigation/href",
+    "properties": {
+      "id": "upgrade-planner",
+      "section": "administration",
+      "name": "Upgrade Planner",
+      "href": "/upgrade-planner",
+      "perspective": "admin"
+    }
+  }
+]

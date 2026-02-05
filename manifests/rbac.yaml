@@ -1,0 +1,66 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: upgrade-planner-plugin
+  namespace: openshift-console
+  labels:
+    app: upgrade-planner-plugin
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: upgrade-planner-plugin
+  labels:
+    app: upgrade-planner-plugin
+rules:
+  # Read cluster version
+  - apiGroups:
+      - config.openshift.io
+    resources:
+      - clusterversions
+    verbs:
+      - get
+      - list
+      - watch
+
+  # Read OLM resources
+  - apiGroups:
+      - operators.coreos.com
+    resources:
+      - subscriptions
+      - clusterserviceversions
+      - installplans
+      - catalogsources
+      - operatorconditions
+    verbs:
+      - get
+      - list
+      - watch
+
+  # Read package manifests
+  - apiGroups:
+      - packages.operators.coreos.com
+    resources:
+      - packagemanifests
+    verbs:
+      - get
+      - list
+      - watch
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: upgrade-planner-plugin
+  labels:
+    app: upgrade-planner-plugin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: upgrade-planner-plugin
+subjects:
+  - kind: ServiceAccount
+    name: upgrade-planner-plugin
+    namespace: openshift-console

@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "outDir": "../../dist/frontend",
+    "rootDir": "../",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
+  },
+  "include": [
+    "./**/*",
+    "../shared/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "../../dist"
+  ]
+}

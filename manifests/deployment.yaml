@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upgrade-planner-plugin
+  namespace: openshift-console
+  labels:
+    app: upgrade-planner-plugin
+    app.kubernetes.io/name: upgrade-planner-plugin
+    app.kubernetes.io/component: dynamic-plugin
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: upgrade-planner-plugin
+  template:
+    metadata:
+      labels:
+        app: upgrade-planner-plugin
+    spec:
+      serviceAccountName: upgrade-planner-plugin
+      containers:
+        - name: upgrade-planner-backend
+          image: quay.io/calfonso/console-plugin-upgrade-planner:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9443
+              protocol: TCP
+              name: https
+          env:
+            - name: LOG_LEVEL
+              value: "info"
+            - name: NODE_ENV
+              value: "production"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 9443
+              scheme: HTTPS
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 9443
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+          volumeMounts:
+            - name: plugin-serving-cert
+              mountPath: /var/serving-cert
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+      volumes:
+        - name: plugin-serving-cert
+          secret:
+            secretName: upgrade-planner-plugin-cert
+            defaultMode: 420
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault

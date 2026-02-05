@@ -1,0 +1,23 @@
+apiVersion: console.openshift.io/v1
+kind: ConsolePlugin
+metadata:
+  name: upgrade-planner
+spec:
+  displayName: Upgrade Planner
+  backend:
+    type: Service
+    service:
+      name: upgrade-planner-plugin
+      namespace: openshift-console
+      port: 9443
+      basePath: /
+  proxy:
+    - type: Service
+      alias: upgrade-planner-backend
+      authorize: false
+      endpoint:
+        type: Service
+        service:
+          name: upgrade-planner-plugin
+          namespace: openshift-console
+          port: 9443
