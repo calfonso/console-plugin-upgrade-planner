@@ -339,25 +339,6 @@ Include:
 - Expected vs actual behavior
 - Relevant logs
 
-## Roadmap
-
-### Phase 2 (Future)
-- Automated upgrade execution
-- Integration with ACM OperatorPolicy
-- Historical upgrade tracking
-- Custom upgrade path creation
-- Upgrade simulation/dry-run
-- Integration with Red Hat Product Lifecycle API
-- Support for disconnected/air-gapped environments
-- Webhook notifications for lifecycle events
-
-### Phase 3 (Future)
-- ML-based upgrade timing optimization
-- Cluster fleet management integration
-- Custom lifecycle policy definitions
-- Rollback strategy planning
-- Impact analysis for upgrades
-
 ## License
 
 Apache License 2.0
