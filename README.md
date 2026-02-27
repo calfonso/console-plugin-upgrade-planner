@@ -123,19 +123,48 @@ Access the plugin at: `https://<console-url>/upgrade-planner`
 
 ## Development
 
-### Local Development Setup
+### Plugin Development Workflow
+
+This is an OpenShift Console Dynamic Plugin and must be developed within an OpenShift cluster environment. The plugin cannot run standalone as it depends on the OpenShift Console infrastructure.
+
+#### Prerequisites
+- Access to an OpenShift 4.14+ cluster
+- `oc` CLI installed and configured
+- Cluster admin permissions
+- Podman or Docker for building images
+
+#### Development Setup
 
 ```bash
 # Install dependencies
-npm install
+yarn install
 
-# Start backend development server
-npm run dev:backend
+# Build the plugin
+yarn build
 
-# In another terminal, start frontend development
-npm run dev:frontend
+# Build and push the container image
+podman build -t quay.io/your-org/upgrade-planner:dev .
+podman push quay.io/your-org/upgrade-planner:dev
 
-# The plugin will be available at http://localhost:9001
+# Update the deployment to use your dev image
+oc set image deployment/upgrade-planner-plugin \
+  upgrade-planner-plugin=quay.io/your-org/upgrade-planner:dev \
+  -n openshift-console
+
+# Watch the logs
+oc logs -f deployment/upgrade-planner-plugin -n openshift-console
+```
+
+#### Hot Reload Development (Optional)
+
+For faster development iterations, you can use webpack in development mode:
+
+```bash
+# Build frontend in development mode
+yarn build:frontend
+
+# The webpack dev server requires the OpenShift Console to be running
+# This plugin loads into the console via module federation
 ```
 
 ### Project Structure
@@ -168,21 +197,152 @@ console-plugin-upgrade-planner/
 └── README.md                 # This file
 ```
 
-### Building
+### Building and Publishing
+
+#### 1. Build the Plugin Locally
 
 ```bash
-# Build both frontend and backend
-npm run build
+# Install dependencies
+yarn install
 
-# Build individually
-npm run build:backend
-npm run build:frontend
+# Build both frontend and backend
+yarn build
+
+# Build individually if needed
+yarn build:backend  # Compile TypeScript backend
+yarn build:frontend # Build webpack bundle
 
 # Run linting
-npm run lint
+yarn lint
+
+# Run type checking
+yarn typecheck
 
 # Run tests
-npm test
+yarn test
+```
+
+#### 2. Build Container Image
+
+```bash
+# Build the container image using podman
+podman build -t quay.io/calfonso/upgrade-planner:latest .
+
+# Or tag with a specific version
+podman build -t quay.io/calfonso/upgrade-planner:v0.1.0 .
+
+# You can also tag with multiple versions
+podman build -t quay.io/calfonso/upgrade-planner:latest \
+             -t quay.io/calfonso/upgrade-planner:v0.1.0 .
+```
+
+#### 3. Publish to Quay.io
+
+```bash
+# Login to Quay.io (if not already logged in)
+podman login quay.io
+
+# Push the image
+podman push quay.io/calfonso/upgrade-planner:latest
+
+# Push specific version if tagged
+podman push quay.io/calfonso/upgrade-planner:v0.1.0
+
+# Verify the image was pushed
+podman images quay.io/calfonso/upgrade-planner
+```
+
+#### 4. Install Plugin on OpenShift Console
+
+**Option A: Using Manifests (Recommended)**
+
+```bash
+# Make sure your manifests/deployment.yaml references the correct image
+# Update the image reference if needed:
+# image: quay.io/calfonso/upgrade-planner:latest
+
+# Apply all manifests to deploy the plugin
+oc apply -f manifests/
+
+# Verify deployment
+oc get deployment upgrade-planner-plugin -n openshift-console
+oc get pods -n openshift-console -l app=upgrade-planner-plugin
+
+# Enable the plugin in the OpenShift Console
+oc patch consoles.operator.openshift.io cluster \
+  --type=merge \
+  --patch '{"spec":{"plugins":["upgrade-planner"]}}'
+
+# Verify the plugin is enabled
+oc get consoles.operator.openshift.io cluster -o jsonpath='{.spec.plugins}'
+```
+
+**Option B: Quick Update for Development**
+
+```bash
+# If plugin is already deployed, update just the image
+oc set image deployment/upgrade-planner-plugin \
+  upgrade-planner-plugin=quay.io/calfonso/upgrade-planner:latest \
+  -n openshift-console
+
+# Watch the rollout
+oc rollout status deployment/upgrade-planner-plugin -n openshift-console
+
+# View logs
+oc logs -f deployment/upgrade-planner-plugin -n openshift-console
+```
+
+#### 5. Verify Installation
+
+```bash
+# Check plugin registration
+oc get consoleplugin upgrade-planner
+
+# Check service
+oc get svc upgrade-planner-plugin -n openshift-console
+
+# Check endpoint is accessible
+oc exec -n openshift-console deployment/upgrade-planner-plugin -- \
+  curl -f http://localhost:9443/health
+
+# View plugin logs
+oc logs deployment/upgrade-planner-plugin -n openshift-console --tail=50
+```
+
+#### 6. Access the Plugin
+
+Navigate to your OpenShift Console:
+- URL: `https://<your-console-url>/upgrade-planner`
+- Location: **Administration → Upgrade Planner** in the left navigation
+
+#### Complete Development Cycle
+
+```bash
+# 1. Make code changes
+vim src/frontend/components/LifecycleDashboard.tsx
+
+# 2. Build and test locally
+yarn build
+yarn typecheck
+yarn lint
+
+# 3. Build container image
+podman build -t quay.io/calfonso/upgrade-planner:dev-$(date +%Y%m%d-%H%M%S) .
+
+# 4. Push to registry
+podman push quay.io/calfonso/upgrade-planner:dev-$(date +%Y%m%d-%H%M%S)
+
+# 5. Update deployment
+oc set image deployment/upgrade-planner-plugin \
+  upgrade-planner-plugin=quay.io/calfonso/upgrade-planner:dev-$(date +%Y%m%d-%H%M%S) \
+  -n openshift-console
+
+# 6. Watch rollout and logs
+oc rollout status deployment/upgrade-planner-plugin -n openshift-console
+oc logs -f deployment/upgrade-planner-plugin -n openshift-console
+
+# 7. Test in browser
+# Refresh the console: https://<your-console-url>/upgrade-planner
 ```
 
 ## Usage
