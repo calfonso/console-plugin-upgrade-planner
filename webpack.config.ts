@@ -47,6 +47,7 @@ const config: any = {
     new CopyWebpackPlugin({
       patterns: [
         { from: path.resolve(__dirname, 'manifests'), to: 'manifests' },
+        { from: path.resolve(__dirname, 'public'), to: '.' },
       ],
     }),
   ],

@@ -3,8 +3,9 @@ import {
   Page,
   PageSection,
   Title,
+  Text,
+  TextVariants,
   Card,
-  CardTitle,
   CardBody,
   Grid,
   GridItem,
@@ -18,20 +19,38 @@ import {
   ToolbarContent,
   ToolbarItem,
   SearchInput,
+  Button,
+  Breadcrumb,
+  BreadcrumbItem,
+  FormSelect,
+  FormSelectOption,
+  Label,
 } from '@patternfly/react-core';
 import { Table, Thead, Tbody, Tr, Th, Td } from '@patternfly/react-table';
-import { ExclamationCircleIcon, CheckCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
+import {
+  ExclamationCircleIcon,
+  CheckCircleIcon,
+  ExclamationTriangleIcon,
+  InfoCircleIcon,
+  EllipsisVIcon,
+} from '@patternfly/react-icons';
+import { useTranslation } from 'react-i18next';
 import { apiClient } from '../services/api-client';
-import { PlatformStatus, OperatorStatus, IssueSeverity } from '../types';
+import { PlatformStatus, OperatorStatus, SupportPhase } from '../types';
+import { ApproveUpdatesModal } from './ApproveUpdatesModal';
+import '../styles/lifecycle-dashboard.css';
 
 /**
  * Lifecycle Dashboard - Shows overall platform and operator lifecycle status
  */
 const LifecycleDashboard: React.FC = () => {
+  const { t } = useTranslation();
   const [platformStatus, setPlatformStatus] = React.useState<PlatformStatus | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [typeFilter, setTypeFilter] = React.useState('all');
+  const [isApproveModalOpen, setIsApproveModalOpen] = React.useState(false);
 
   React.useEffect(() => {
     loadPlatformStatus();
@@ -64,17 +83,6 @@ const LifecycleDashboard: React.FC = () => {
     );
   }, [platformStatus, searchTerm]);
 
-  const getHealthIcon = (health: 'healthy' | 'warning' | 'critical') => {
-    switch (health) {
-      case 'healthy':
-        return <CheckCircleIcon color="green" />;
-      case 'warning':
-        return <ExclamationTriangleIcon color="orange" />;
-      case 'critical':
-        return <ExclamationCircleIcon color="red" />;
-    }
-  };
-
 
   if (loading) {
     return (
@@ -82,7 +90,7 @@ const LifecycleDashboard: React.FC = () => {
         <PageSection>
           <EmptyState>
             <Spinner size="xl" />
-            <EmptyStateBody>Loading platform status...</EmptyStateBody>
+            <EmptyStateBody>{t('loadingPlatformStatus')}</EmptyStateBody>
           </EmptyState>
         </PageSection>
       </Page>
@@ -93,7 +101,7 @@ const LifecycleDashboard: React.FC = () => {
     return (
       <Page>
         <PageSection>
-          <Alert variant={AlertVariant.danger} title="Error loading platform status">
+          <Alert variant={AlertVariant.danger} title={t('errorLoadingPlatformStatus')}>
             {error}
           </Alert>
         </PageSection>
@@ -107,180 +115,221 @@ const LifecycleDashboard: React.FC = () => {
         <PageSection>
           <EmptyState>
             <EmptyStateIcon icon={ExclamationCircleIcon} />
-            <EmptyStateBody>No platform status available</EmptyStateBody>
+            <EmptyStateBody>{t('noPlatformStatusAvailable')}</EmptyStateBody>
           </EmptyState>
         </PageSection>
       </Page>
     );
   }
 
+  // Calculate summary card counts
+  const installedCount = platformStatus?.operators.length || 0;
+  const updatesAvailable = platformStatus?.operators.filter((op) => op.availableUpgrades.length > 0).length || 0;
+  const endOfLifeCount = platformStatus?.operators.filter(
+    (op) => op.lifecycleInfo.supportPhase === SupportPhase.END_OF_LIFE || op.lifecycleInfo.supportPhase === SupportPhase.DEPRECATED
+  ).length || 0;
+
   return (
     <Page>
-      <PageSection variant="light">
-        <Title headingLevel="h1">Platform Lifecycle Dashboard</Title>
+      {/* Breadcrumb and Page Header */}
+      <PageSection variant="light" className="up-page-section-header">
+        <Breadcrumb className="up-breadcrumb">
+          <BreadcrumbItem to="#">{t('ecosystem')}</BreadcrumbItem>
+          <BreadcrumbItem to="#" isActive>
+            {t('softwareLifecycleManagement')}
+          </BreadcrumbItem>
+        </Breadcrumb>
+        <Title headingLevel="h1" size="2xl" className="up-page-title">
+          {t('softwareLifecycleManagement')}
+        </Title>
+        <Text component={TextVariants.p} className="up-page-description">
+          {t('monitorManageScheduleUpgrades')}
+        </Text>
       </PageSection>
 
       <PageSection>
-        {/* Overall Status Cards */}
-        <Grid hasGutter>
-          <GridItem span={3}>
-            <Card>
-              <CardTitle>Overall Health</CardTitle>
+        {/* Summary Cards */}
+        <Grid hasGutter className="up-summary-cards">
+          <GridItem md={4}>
+            <Card className="up-summary-card up-summary-card--success">
               <CardBody>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.5rem' }}>
-                  {getHealthIcon(platformStatus.overallHealth)}
-                  <span style={{ textTransform: 'capitalize' }}>{platformStatus.overallHealth}</span>
+                <div className="up-summary-card__content">
+                  <div className="up-summary-card__icon">
+                    <CheckCircleIcon />
+                  </div>
+                  <div className="up-summary-card__details">
+                    <div className="up-summary-card__count">{installedCount}</div>
+                    <div className="up-summary-card__label">{t('installedSoftware')}</div>
+                  </div>
                 </div>
               </CardBody>
             </Card>
           </GridItem>
 
-          <GridItem span={3}>
-            <Card>
-              <CardTitle>Cluster Version</CardTitle>
+          <GridItem md={4}>
+            <Card className="up-summary-card up-summary-card--info">
               <CardBody>
-                <div style={{ fontSize: '1.2rem' }}>{platformStatus.cluster.currentVersion}</div>
-                <div style={{ fontSize: '0.9rem', color: '#666' }}>
-                  Channel: {platformStatus.cluster.channel}
+                <div className="up-summary-card__content">
+                  <div className="up-summary-card__icon">
+                    <InfoCircleIcon />
+                  </div>
+                  <div className="up-summary-card__details">
+                    <div className="up-summary-card__count">{updatesAvailable}</div>
+                    <div className="up-summary-card__label">{t('availableUpdates')}</div>
+                  </div>
                 </div>
               </CardBody>
             </Card>
           </GridItem>
 
-          <GridItem span={3}>
-            <Card>
-              <CardTitle>Total Issues</CardTitle>
+          <GridItem md={4}>
+            <Card className="up-summary-card up-summary-card--warning">
               <CardBody>
-                <div style={{ fontSize: '1.5rem' }}>
-                  {platformStatus.totalIssues}
-                  {platformStatus.criticalIssues > 0 && (
-                    <span style={{ color: 'red', marginLeft: '8px' }}>
-                      ({platformStatus.criticalIssues} critical)
-                    </span>
-                  )}
-                </div>
-              </CardBody>
-            </Card>
-          </GridItem>
-
-          <GridItem span={3}>
-            <Card>
-              <CardTitle>Support Expires In</CardTitle>
-              <CardBody>
-                <div style={{ fontSize: '1.5rem' }}>
-                  {platformStatus.supportExpiresIn !== undefined
-                    ? `${platformStatus.supportExpiresIn} days`
-                    : 'Unknown'}
+                <div className="up-summary-card__content">
+                  <div className="up-summary-card__icon">
+                    <ExclamationTriangleIcon />
+                  </div>
+                  <div className="up-summary-card__details">
+                    <div className="up-summary-card__count">{endOfLifeCount}</div>
+                    <div className="up-summary-card__label">{t('endOfLifeSupport')}</div>
+                  </div>
                 </div>
               </CardBody>
             </Card>
           </GridItem>
         </Grid>
 
-        {/* Critical Alerts */}
-        {platformStatus.criticalIssues > 0 && (
-          <Alert
-            variant={AlertVariant.danger}
-            title={`${platformStatus.criticalIssues} critical issue(s) detected`}
-            style={{ marginTop: '1rem' }}
-          >
-            Critical issues may block cluster upgrades or cause operational problems. Review operators below for
-            details.
-          </Alert>
-        )}
-
-        {/* Next Maintenance Window */}
-        {platformStatus.nextMaintenanceWindow && (
-          <Alert
-            variant={AlertVariant.info}
-            title="Recommended Maintenance Window"
-            style={{ marginTop: '1rem' }}
-          >
-            <strong>{platformStatus.nextMaintenanceWindow.reason}</strong>
-            <div>
-              Recommended date:{' '}
-              {new Date(platformStatus.nextMaintenanceWindow.recommendedDate).toLocaleDateString()}
-            </div>
-            <div>Estimated duration: {platformStatus.nextMaintenanceWindow.estimatedDuration}</div>
-          </Alert>
-        )}
+        {/* Toolbar */}
+        <Toolbar className="up-main-toolbar">
+          <ToolbarContent>
+            <ToolbarItem>
+              <FormSelect
+                value={typeFilter}
+                onChange={(_event, value) => setTypeFilter(value as string)}
+                aria-label={t('typeFilter')}
+                className="up-type-filter"
+              >
+                <FormSelectOption key="all" value="all" label={t('allTypes')} />
+                <FormSelectOption key="update-available" value="update-available" label={t('updateAvailable')} />
+                <FormSelectOption key="up-to-date" value="up-to-date" label={t('upToDate')} />
+              </FormSelect>
+            </ToolbarItem>
+            <ToolbarItem>
+              <SearchInput
+                placeholder={t('findByName')}
+                value={searchTerm}
+                onChange={(_event, value) => setSearchTerm(value)}
+                onClear={() => setSearchTerm('')}
+                className="up-search-input"
+              />
+            </ToolbarItem>
+            <ToolbarItem>
+              <Button variant="primary" onClick={() => setIsApproveModalOpen(true)}>
+                {t('approveUpdate')}
+              </Button>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Button
+                variant="link"
+                component="a"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  alert(t('browseSoftwareCatalogComingSoon'));
+                }}
+              >
+                {t('browseSoftwareCatalog')}
+              </Button>
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
 
         {/* Operators Table */}
-        <Card style={{ marginTop: '1.5rem' }}>
-          <CardTitle>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span>Installed Operators ({filteredOperators.length})</span>
-              <Toolbar style={{ padding: 0 }}>
-                <ToolbarContent>
-                  <ToolbarItem>
-                    <SearchInput
-                      placeholder="Filter operators"
-                      value={searchTerm}
-                      onChange={(_event, value) => setSearchTerm(value)}
-                      onClear={() => setSearchTerm('')}
-                    />
-                  </ToolbarItem>
-                </ToolbarContent>
-              </Toolbar>
-            </div>
-          </CardTitle>
-          <CardBody>
-            <Table variant="compact">
-              <Thead>
-                <Tr>
-                  <Th>Status</Th>
-                  <Th>Operator</Th>
-                  <Th>Version</Th>
-                  <Th>Channel</Th>
-                  <Th>Lifecycle Model</Th>
-                  <Th>Support Phase</Th>
-                  <Th>Issues</Th>
-                  <Th>Upgrades Available</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {filteredOperators.map((operator: OperatorStatus) => (
-                  <Tr key={`${operator.installation.namespace}/${operator.installation.name}`}>
-                    <Td>{getHealthIcon(operator.healthStatus)}</Td>
-                    <Td>
-                      <a href={`/upgrade-planner/operator/${operator.installation.namespace}/${operator.installation.name}`}>
-                        {operator.installation.displayName}
-                      </a>
-                    </Td>
-                    <Td>{operator.installation.currentVersion}</Td>
-                    <Td>{operator.installation.currentChannel}</Td>
-                    <Td style={{ textTransform: 'capitalize' }}>
-                      {operator.lifecycleInfo.lifecycleModel.replace('-', ' ')}
-                    </Td>
-                    <Td style={{ textTransform: 'capitalize' }}>
-                      {operator.lifecycleInfo.supportPhase.replace('-', ' ')}
-                    </Td>
-                    <Td>
-                      {operator.issues.length > 0 ? (
-                        <span>
-                          {operator.issues.filter((i) => i.severity === IssueSeverity.CRITICAL).length > 0 && (
-                            <span style={{ color: 'red', marginRight: '4px' }}>
-                              {operator.issues.filter((i) => i.severity === IssueSeverity.CRITICAL).length} critical
-                            </span>
-                          )}
-                          {operator.issues.filter((i) => i.severity === IssueSeverity.WARNING).length > 0 && (
-                            <span style={{ color: 'orange' }}>
-                              {operator.issues.filter((i) => i.severity === IssueSeverity.WARNING).length} warning
-                            </span>
-                          )}
-                        </span>
-                      ) : (
-                        <span style={{ color: 'green' }}>None</span>
-                      )}
-                    </Td>
-                    <Td>{operator.availableUpgrades.length}</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </CardBody>
-        </Card>
+        <Table variant="compact" className="up-operators-table">
+          <Thead>
+            <Tr>
+              <Th width={20}>{t('name')}</Th>
+              <Th width={15}>{t('status')}</Th>
+              <Th width={10}>{t('version')}</Th>
+              <Th width={15}>{t('updatePlan')}</Th>
+              <Th width={15}>{t('support')}</Th>
+              <Th width={15}>{t('clusterCompatibility')}</Th>
+              <Th width={10}>{t('lastUpdated')}</Th>
+              <Th>{t('actions')}</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {filteredOperators.map((operator: OperatorStatus) => (
+              <Tr key={`${operator.installation.namespace}/${operator.installation.name}`}>
+                <Td dataLabel={t('name')}>
+                  <a
+                    href={`/upgrade-planner/operator/${operator.installation.namespace}/${operator.installation.name}`}
+                    className="up-operator-name-link"
+                  >
+                    {operator.installation.displayName}
+                  </a>
+                </Td>
+                <Td dataLabel={t('status')}>
+                  {operator.availableUpgrades.length > 0 ? (
+                    <Label color="purple" icon={<InfoCircleIcon />}>
+                      {t('updateAvailable')}
+                    </Label>
+                  ) : (
+                    <Label color="green">{t('upToDate')}</Label>
+                  )}
+                </Td>
+                <Td dataLabel={t('version')}>{operator.installation.currentVersion}</Td>
+                <Td dataLabel={t('updatePlan')}>
+                  {operator.installation.approved ? t('automatic') : t('manual')}
+                </Td>
+                <Td dataLabel={t('support')}>
+                  <div>
+                    {new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })}
+                  </div>
+                  <Label color="grey" className="up-support-label">
+                    {operator.lifecycleInfo.supportPhase === SupportPhase.END_OF_LIFE ? t('endOfLife') : t('yearsRemaining', { count: 2, months: 8 })}
+                  </Label>
+                </Td>
+                <Td dataLabel={t('clusterCompatibility')}>
+                  <Label color="green">{t('compatible')}</Label>
+                </Td>
+                <Td dataLabel={t('lastUpdated')}>
+                  {new Date().toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                  <br />
+                  {new Date().toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </Td>
+                <Td dataLabel={t('actions')}>
+                  <Button
+                    variant="plain"
+                    aria-label={t('actions')}
+                    onClick={() => alert(t('actionsComingSoon'))}
+                  >
+                    <EllipsisVIcon />
+                  </Button>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
       </PageSection>
+
+      {/* Approve Updates Modal */}
+      <ApproveUpdatesModal
+        isOpen={isApproveModalOpen}
+        onClose={() => setIsApproveModalOpen(false)}
+        operators={platformStatus?.operators || []}
+      />
     </Page>
   );
 };

@@ -1,0 +1,14 @@
+/* Operator Upgrade Approval Page Styles - Prefixed with 'up-' (upgrade-planner) */
+
+.up-page-header-title {
+  margin-top: var(--pf-v5-global--spacer--md);
+}
+
+.up-page-header-subtitle {
+  margin-top: var(--pf-v5-global--spacer--sm);
+  color: var(--pf-v5-global--Color--200);
+}
+
+.up-tabs-container {
+  padding-left: var(--pf-v5-global--spacer--lg);
+}

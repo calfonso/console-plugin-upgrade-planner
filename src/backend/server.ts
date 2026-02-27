@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction, Express } from 'express';
 import compression from 'compression';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -10,13 +10,14 @@ import { lifecycleService } from './services/lifecycle-service';
 import { upgradePlannerService } from './services/upgrade-planner';
 import { logger } from './utils/logger';
 
-const app = express();
+const app: Express = express();
 const PORT = process.env.PORT || 9000;
 const PLUGIN_PORT = 9443;
 
 // Middleware
 app.use(helmet());
-app.use(compression());
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+app.use(compression() as any);
 app.use(cors());
 app.use(express.json());
 app.use(

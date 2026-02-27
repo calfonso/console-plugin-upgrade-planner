@@ -1,0 +1,171 @@
+/* Upgrade Approval Components Styles - Prefixed with 'up-' (upgrade-planner) */
+
+/* Related Operators Table */
+.up-related-operators-card {
+  margin-top: var(--pf-v5-global--spacer--lg);
+}
+
+.up-related-operator-link {
+  color: var(--pf-v5-global--link--Color);
+  text-decoration: underline;
+}
+
+/* Update Strategy Sidebar */
+.up-update-strategy-field {
+  display: flex;
+  align-items: center;
+  gap: var(--pf-v5-global--spacer--sm);
+}
+
+.up-update-strategy-value {
+  text-transform: capitalize;
+}
+
+.up-update-strategy-edit-btn {
+  padding: 0;
+  min-width: auto;
+}
+
+.up-update-strategy-edit-icon {
+  font-size: var(--pf-v5-global--FontSize--xs);
+}
+
+.up-manage-subscription-btn {
+  padding: 0;
+  font-size: var(--pf-v5-global--FontSize--sm);
+}
+
+/* Upgrade Approval Card */
+.up-approval-alert {
+  margin-bottom: var(--pf-v5-global--spacer--lg);
+}
+
+.up-channel-arrow-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.up-channel-arrow {
+  font-size: var(--pf-v5-global--FontSize--2xl);
+  color: var(--pf-v5-global--Color--200);
+}
+
+.up-current-field-value {
+  padding: var(--pf-v5-global--spacer--sm) 0;
+  font-weight: var(--pf-v5-global--FontWeight--semi-bold);
+}
+
+.up-approval-actions {
+  margin-top: var(--pf-v5-global--spacer--md);
+}
+
+.up-approve-btn {
+  margin-right: var(--pf-v5-global--spacer--md);
+}
+
+/* Version Progress Stepper */
+.up-version-stepper-card {
+  margin-top: var(--pf-v5-global--spacer--lg);
+}
+
+.up-stepper-section {
+  margin-bottom: var(--pf-v5-global--spacer--2xl);
+}
+
+.up-stepper-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: var(--pf-v5-global--spacer--md) 0;
+}
+
+.up-stepper-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+  flex: 1;
+}
+
+.up-stepper-step--first,
+.up-stepper-step--last {
+  flex: 0 0 auto;
+}
+
+.up-stepper-progress-line {
+  position: absolute;
+  top: 12px;
+  left: 100%;
+  width: 100%;
+  height: 2px;
+  z-index: 0;
+}
+
+.up-stepper-progress-line--active {
+  background-color: var(--pf-v5-global--primary-color--100);
+}
+
+.up-stepper-progress-line--inactive {
+  background-color: var(--pf-v5-global--BorderColor--100);
+}
+
+.up-stepper-step-content {
+  position: relative;
+  z-index: 1;
+}
+
+.up-stepper-channel {
+  font-size: var(--pf-v5-global--FontSize--sm);
+  margin-bottom: var(--pf-v5-global--spacer--xs);
+  color: var(--pf-v5-global--Color--200);
+  text-align: center;
+}
+
+.up-stepper-version {
+  font-size: var(--pf-v5-global--FontSize--sm);
+  margin-bottom: var(--pf-v5-global--spacer--sm);
+  text-align: center;
+  padding-bottom: var(--pf-v5-global--spacer--xs);
+}
+
+.up-stepper-version--current {
+  font-weight: var(--pf-v5-global--FontWeight--semi-bold);
+  border-bottom: 2px solid var(--pf-v5-global--primary-color--100);
+}
+
+.up-stepper-icon {
+  font-size: var(--pf-v5-global--FontSize--xl);
+}
+
+.up-stepper-separator {
+  height: 1px;
+  background-color: var(--pf-v5-global--BorderColor--100);
+  margin: var(--pf-v5-global--spacer--xl) 0;
+  width: 50%;
+}
+
+.up-stepper-more-button-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.up-stepper-more-button {
+  z-index: 1;
+  position: relative;
+}
+
+.up-stepper-expanded-content {
+  margin-top: var(--pf-v5-global--spacer--md);
+  padding: var(--pf-v5-global--spacer--md);
+  background-color: var(--pf-v5-global--BackgroundColor--200);
+  border-radius: var(--pf-v5-global--BorderRadius--sm);
+}
+
+.up-stepper-expanded-text {
+  margin: 0;
+  color: var(--pf-v5-global--Color--200);
+}

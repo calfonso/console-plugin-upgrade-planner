@@ -1,0 +1,32 @@
+/* Approve Updates Modal Styles - Prefixed with 'up-' (upgrade-planner) */
+
+.up-approve-modal {
+  /* Modal-specific overrides if needed */
+}
+
+.up-approve-modal__description {
+  margin-bottom: var(--pf-v5-global--spacer--md);
+  color: var(--pf-v5-global--Color--200);
+}
+
+.up-approve-modal__alert {
+  margin-bottom: var(--pf-v5-global--spacer--md);
+}
+
+.up-approve-modal__form {
+  margin-bottom: var(--pf-v5-global--spacer--md);
+}
+
+.up-approve-modal__select-all {
+  font-weight: var(--pf-v5-global--FontWeight--semi-bold);
+}
+
+.up-approve-modal__table {
+  border: 1px solid var(--pf-v5-global--BorderColor--100);
+  margin-top: var(--pf-v5-global--spacer--md);
+}
+
+.up-approve-modal__target-version {
+  font-weight: var(--pf-v5-global--FontWeight--semi-bold);
+  color: var(--pf-v5-global--primary-color--100);
+}

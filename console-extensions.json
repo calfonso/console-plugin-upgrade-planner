@@ -30,6 +30,16 @@
     }
   },
   {
+    "type": "console.page/route",
+    "properties": {
+      "exact": true,
+      "path": "/upgrade-planner/operator/:namespace/:name/upgrade",
+      "component": {
+        "$codeRef": "OperatorUpgradeApprovalPage.default"
+      }
+    }
+  },
+  {
     "type": "console.navigation/href",
     "properties": {
       "id": "upgrade-planner",

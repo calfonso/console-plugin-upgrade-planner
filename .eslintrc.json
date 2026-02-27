@@ -4,9 +4,10 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
-    "plugin:react-hooks/recommended"
+    "plugin:react-hooks/recommended",
+    "plugin:prettier/recommended"
   ],
-  "plugins": ["@typescript-eslint", "react", "react-hooks"],
+  "plugins": ["@typescript-eslint", "react", "react-hooks", "prettier"],
   "env": {
     "browser": true,
     "node": true,
@@ -23,7 +24,8 @@
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "react/prop-types": "off",
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "prettier/prettier": "error"
   },
   "settings": {
     "react": {
