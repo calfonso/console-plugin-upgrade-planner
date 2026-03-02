@@ -40,7 +40,6 @@
     "pino-http": "^9.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-i18next": "^11.7.3",
     "react-router-dom": "5.3.x",
     "semver": "^7.6.0"
   },

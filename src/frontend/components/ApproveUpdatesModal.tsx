@@ -13,7 +13,6 @@ import {
   TextVariants,
 } from '@patternfly/react-core';
 import { Table, Thead, Tbody, Tr, Th, Td } from '@patternfly/react-table';
-import { useTranslation } from 'react-i18next';
 import { OperatorStatus } from '../types';
 import '../styles/approve-updates-modal.css';
 
@@ -28,7 +27,6 @@ export const ApproveUpdatesModal: React.FC<ApproveUpdatesModalProps> = ({
   onClose,
   operators,
 }) => {
-  const { t } = useTranslation();
   const [selectedOperators, setSelectedOperators] = React.useState<Set<string>>(new Set());
   const [selectAll, setSelectAll] = React.useState(false);
 
@@ -77,7 +75,7 @@ export const ApproveUpdatesModal: React.FC<ApproveUpdatesModalProps> = ({
     // TODO: Implement actual approval API call
     console.log('Approving updates for:', Array.from(selectedOperators));
     alert(
-      `${t('approvingUpdatesFor')} ${selectedOperators.size} ${t('operators')}. ${t('approvalFunctionalityComingSoon')}`
+      `Approving updates for ${selectedOperators.size} operators. Approval functionality coming soon.`
     );
     onClose();
   };
@@ -90,7 +88,7 @@ export const ApproveUpdatesModal: React.FC<ApproveUpdatesModalProps> = ({
   return (
     <Modal
       variant={ModalVariant.large}
-      title={t('approveUpdates')}
+      title="Approve Updates"
       isOpen={isOpen}
       onClose={onClose}
       actions={[
@@ -100,38 +98,38 @@ export const ApproveUpdatesModal: React.FC<ApproveUpdatesModalProps> = ({
           onClick={handleApprove}
           isDisabled={selectedOperators.size === 0}
         >
-          {t('approveSelected', { count: selectedOperators.size })}
+          Approve Selected ({selectedOperators.size})
         </Button>,
         <Button key="cancel" variant="link" onClick={onClose}>
-          {t('cancel')}
+          Cancel
         </Button>,
       ]}
       className="up-approve-modal"
     >
       <TextContent className="up-approve-modal__description">
-        <Text component={TextVariants.p}>{t('approveUpdatesDescription')}</Text>
+        <Text component={TextVariants.p}>Select operators to approve for updates. Approved operators will be updated to their target versions.</Text>
       </TextContent>
 
       {operatorsWithUpdates.length === 0 ? (
-        <Alert variant={AlertVariant.info} isInline title={t('noUpdatesAvailable')} className="up-approve-modal__alert">
-          {t('allOperatorsUpToDate')}
+        <Alert variant={AlertVariant.info} isInline title="No Updates Available" className="up-approve-modal__alert">
+          All operators are up to date
         </Alert>
       ) : (
         <>
           <Alert
             variant={AlertVariant.warning}
             isInline
-            title={t('approvalWarningTitle')}
+            title="Approval Warning"
             className="up-approve-modal__alert"
           >
-            {t('approvalWarningMessage')}
+            Approving updates will initiate the update process. Please ensure you have reviewed the release notes and compatibility information.
           </Alert>
 
           <Form className="up-approve-modal__form">
             <FormGroup>
               <Checkbox
                 id="select-all-operators"
-                label={t('selectAllOperators', { count: operatorsWithUpdates.length })}
+                label={`Select all operators (${operatorsWithUpdates.length})`}
                 isChecked={selectAll}
                 onChange={(_event, checked) => handleSelectAll(checked)}
                 className="up-approve-modal__select-all"
@@ -143,10 +141,10 @@ export const ApproveUpdatesModal: React.FC<ApproveUpdatesModalProps> = ({
             <Thead>
               <Tr>
                 <Th width={10}></Th>
-                <Th width={30}>{t('operator')}</Th>
-                <Th width={20}>{t('currentVersion')}</Th>
-                <Th width={20}>{t('targetVersion')}</Th>
-                <Th width={20}>{t('channel')}</Th>
+                <Th width={30}>Operator</Th>
+                <Th width={20}>Current Version</Th>
+                <Th width={20}>Target Version</Th>
+                <Th width={20}>Channel</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -159,17 +157,17 @@ export const ApproveUpdatesModal: React.FC<ApproveUpdatesModalProps> = ({
                     <Td>
                       <Checkbox
                         id={`select-${operatorId}`}
-                        aria-label={t('selectOperator', { name: operator.installation.displayName })}
+                        aria-label={`Select ${operator.installation.displayName}`}
                         isChecked={isSelected}
                         onChange={(_event, checked) => handleSelectOperator(operatorId, checked)}
                       />
                     </Td>
-                    <Td dataLabel={t('operator')}>{operator.installation.displayName}</Td>
-                    <Td dataLabel={t('currentVersion')}>{operator.installation.currentVersion}</Td>
-                    <Td dataLabel={t('targetVersion')} className="up-approve-modal__target-version">
+                    <Td dataLabel="Operator">{operator.installation.displayName}</Td>
+                    <Td dataLabel="Current Version">{operator.installation.currentVersion}</Td>
+                    <Td dataLabel="Target Version" className="up-approve-modal__target-version">
                       {getLatestVersion(operator)}
                     </Td>
-                    <Td dataLabel={t('channel')}>{operator.installation.currentChannel}</Td>
+                    <Td dataLabel="Channel">{operator.installation.currentChannel}</Td>
                   </Tr>
                 );
               })}

@@ -34,7 +34,6 @@ import {
   InfoCircleIcon,
   EllipsisVIcon,
 } from '@patternfly/react-icons';
-import { useTranslation } from 'react-i18next';
 import { apiClient } from '../services/api-client';
 import { PlatformStatus, OperatorStatus, SupportPhase } from '../types';
 import { ApproveUpdatesModal } from './ApproveUpdatesModal';
@@ -44,7 +43,6 @@ import '../styles/lifecycle-dashboard.css';
  * Lifecycle Dashboard - Shows overall platform and operator lifecycle status
  */
 const LifecycleDashboard: React.FC = () => {
-  const { t } = useTranslation();
   const [platformStatus, setPlatformStatus] = React.useState<PlatformStatus | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
@@ -90,7 +88,7 @@ const LifecycleDashboard: React.FC = () => {
         <PageSection>
           <EmptyState>
             <Spinner size="xl" />
-            <EmptyStateBody>{t('loadingPlatformStatus')}</EmptyStateBody>
+            <EmptyStateBody>Loading platform status...</EmptyStateBody>
           </EmptyState>
         </PageSection>
       </Page>
@@ -101,7 +99,7 @@ const LifecycleDashboard: React.FC = () => {
     return (
       <Page>
         <PageSection>
-          <Alert variant={AlertVariant.danger} title={t('errorLoadingPlatformStatus')}>
+          <Alert variant={AlertVariant.danger} title="Error Loading Platform Status">
             {error}
           </Alert>
         </PageSection>
@@ -115,7 +113,7 @@ const LifecycleDashboard: React.FC = () => {
         <PageSection>
           <EmptyState>
             <EmptyStateIcon icon={ExclamationCircleIcon} />
-            <EmptyStateBody>{t('noPlatformStatusAvailable')}</EmptyStateBody>
+            <EmptyStateBody>No platform status available</EmptyStateBody>
           </EmptyState>
         </PageSection>
       </Page>
@@ -134,16 +132,16 @@ const LifecycleDashboard: React.FC = () => {
       {/* Breadcrumb and Page Header */}
       <PageSection variant="light" className="up-page-section-header">
         <Breadcrumb className="up-breadcrumb">
-          <BreadcrumbItem to="#">{t('ecosystem')}</BreadcrumbItem>
+          <BreadcrumbItem to="#">Ecosystem</BreadcrumbItem>
           <BreadcrumbItem to="#" isActive>
-            {t('softwareLifecycleManagement')}
+            Software Lifecycle Management
           </BreadcrumbItem>
         </Breadcrumb>
         <Title headingLevel="h1" size="2xl" className="up-page-title">
-          {t('softwareLifecycleManagement')}
+          Software Lifecycle Management
         </Title>
         <Text component={TextVariants.p} className="up-page-description">
-          {t('monitorManageScheduleUpgrades')}
+          Monitor, manage, and schedule upgrades for your platform and operators
         </Text>
       </PageSection>
 
@@ -159,7 +157,7 @@ const LifecycleDashboard: React.FC = () => {
                   </div>
                   <div className="up-summary-card__details">
                     <div className="up-summary-card__count">{installedCount}</div>
-                    <div className="up-summary-card__label">{t('installedSoftware')}</div>
+                    <div className="up-summary-card__label">Installed Software</div>
                   </div>
                 </div>
               </CardBody>
@@ -175,7 +173,7 @@ const LifecycleDashboard: React.FC = () => {
                   </div>
                   <div className="up-summary-card__details">
                     <div className="up-summary-card__count">{updatesAvailable}</div>
-                    <div className="up-summary-card__label">{t('availableUpdates')}</div>
+                    <div className="up-summary-card__label">Available Updates</div>
                   </div>
                 </div>
               </CardBody>
@@ -191,7 +189,7 @@ const LifecycleDashboard: React.FC = () => {
                   </div>
                   <div className="up-summary-card__details">
                     <div className="up-summary-card__count">{endOfLifeCount}</div>
-                    <div className="up-summary-card__label">{t('endOfLifeSupport')}</div>
+                    <div className="up-summary-card__label">End of Life Support</div>
                   </div>
                 </div>
               </CardBody>
@@ -206,17 +204,17 @@ const LifecycleDashboard: React.FC = () => {
               <FormSelect
                 value={typeFilter}
                 onChange={(_event, value) => setTypeFilter(value as string)}
-                aria-label={t('typeFilter')}
+                aria-label="Type filter"
                 className="up-type-filter"
               >
-                <FormSelectOption key="all" value="all" label={t('allTypes')} />
-                <FormSelectOption key="update-available" value="update-available" label={t('updateAvailable')} />
-                <FormSelectOption key="up-to-date" value="up-to-date" label={t('upToDate')} />
+                <FormSelectOption key="all" value="all" label="All Types" />
+                <FormSelectOption key="update-available" value="update-available" label="Update Available" />
+                <FormSelectOption key="up-to-date" value="up-to-date" label="Up to Date" />
               </FormSelect>
             </ToolbarItem>
             <ToolbarItem>
               <SearchInput
-                placeholder={t('findByName')}
+                placeholder="Find by name"
                 value={searchTerm}
                 onChange={(_event, value) => setSearchTerm(value)}
                 onClear={() => setSearchTerm('')}
@@ -225,7 +223,7 @@ const LifecycleDashboard: React.FC = () => {
             </ToolbarItem>
             <ToolbarItem>
               <Button variant="primary" onClick={() => setIsApproveModalOpen(true)}>
-                {t('approveUpdate')}
+                Approve Update
               </Button>
             </ToolbarItem>
             <ToolbarItem>
@@ -235,10 +233,10 @@ const LifecycleDashboard: React.FC = () => {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  alert(t('browseSoftwareCatalogComingSoon'));
+                  alert('Browse software catalog functionality coming soon');
                 }}
               >
-                {t('browseSoftwareCatalog')}
+                Browse Software Catalog
               </Button>
             </ToolbarItem>
           </ToolbarContent>
@@ -248,20 +246,20 @@ const LifecycleDashboard: React.FC = () => {
         <Table variant="compact" className="up-operators-table">
           <Thead>
             <Tr>
-              <Th width={20}>{t('name')}</Th>
-              <Th width={15}>{t('status')}</Th>
-              <Th width={10}>{t('version')}</Th>
-              <Th width={15}>{t('updatePlan')}</Th>
-              <Th width={15}>{t('support')}</Th>
-              <Th width={15}>{t('clusterCompatibility')}</Th>
-              <Th width={10}>{t('lastUpdated')}</Th>
-              <Th>{t('actions')}</Th>
+              <Th width={20}>Name</Th>
+              <Th width={15}>Status</Th>
+              <Th width={10}>Version</Th>
+              <Th width={15}>Update Plan</Th>
+              <Th width={15}>Support</Th>
+              <Th width={15}>Cluster Compatibility</Th>
+              <Th width={10}>Last Updated</Th>
+              <Th>Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
             {filteredOperators.map((operator: OperatorStatus) => (
               <Tr key={`${operator.installation.namespace}/${operator.installation.name}`}>
-                <Td dataLabel={t('name')}>
+                <Td dataLabel="Name">
                   <a
                     href={`/upgrade-planner/operator/${operator.installation.namespace}/${operator.installation.name}`}
                     className="up-operator-name-link"
@@ -269,20 +267,20 @@ const LifecycleDashboard: React.FC = () => {
                     {operator.installation.displayName}
                   </a>
                 </Td>
-                <Td dataLabel={t('status')}>
+                <Td dataLabel="Status">
                   {operator.availableUpgrades.length > 0 ? (
                     <Label color="purple" icon={<InfoCircleIcon />}>
-                      {t('updateAvailable')}
+                      Update Available
                     </Label>
                   ) : (
-                    <Label color="green">{t('upToDate')}</Label>
+                    <Label color="green">Up to Date</Label>
                   )}
                 </Td>
-                <Td dataLabel={t('version')}>{operator.installation.currentVersion}</Td>
-                <Td dataLabel={t('updatePlan')}>
-                  {operator.installation.approved ? t('automatic') : t('manual')}
+                <Td dataLabel="Version">{operator.installation.currentVersion}</Td>
+                <Td dataLabel="Update Plan">
+                  {operator.installation.approved ? 'Automatic' : 'Manual'}
                 </Td>
-                <Td dataLabel={t('support')}>
+                <Td dataLabel="Support">
                   <div>
                     {new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', {
                       year: 'numeric',
@@ -291,13 +289,13 @@ const LifecycleDashboard: React.FC = () => {
                     })}
                   </div>
                   <Label color="grey" className="up-support-label">
-                    {operator.lifecycleInfo.supportPhase === SupportPhase.END_OF_LIFE ? t('endOfLife') : t('yearsRemaining', { count: 2, months: 8 })}
+                    {operator.lifecycleInfo.supportPhase === SupportPhase.END_OF_LIFE ? 'End of Life' : '2 years 8 months remaining'}
                   </Label>
                 </Td>
-                <Td dataLabel={t('clusterCompatibility')}>
-                  <Label color="green">{t('compatible')}</Label>
+                <Td dataLabel="Cluster Compatibility">
+                  <Label color="green">Compatible</Label>
                 </Td>
-                <Td dataLabel={t('lastUpdated')}>
+                <Td dataLabel="Last Updated">
                   {new Date().toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
@@ -309,11 +307,11 @@ const LifecycleDashboard: React.FC = () => {
                     minute: '2-digit',
                   })}
                 </Td>
-                <Td dataLabel={t('actions')}>
+                <Td dataLabel="Actions">
                   <Button
                     variant="plain"
-                    aria-label={t('actions')}
-                    onClick={() => alert(t('actionsComingSoon'))}
+                    aria-label="Actions"
+                    onClick={() => alert('Actions coming soon')}
                   >
                     <EllipsisVIcon />
                   </Button>

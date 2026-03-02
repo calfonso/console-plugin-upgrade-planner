@@ -11,7 +11,6 @@ import {
   GridItem,
 } from '@patternfly/react-core';
 import { InfoCircleIcon } from '@patternfly/react-icons';
-import { useTranslation } from 'react-i18next';
 import { OperatorStatus } from '../../types';
 import '../../styles/upgrade-approval-components.css';
 
@@ -23,7 +22,6 @@ interface UpgradeApprovalCardProps {
 export const UpgradeApprovalCard: React.FC<UpgradeApprovalCardProps> = ({
   operator,
 }) => {
-  const { t } = useTranslation();
   const [targetVersion, setTargetVersion] = React.useState('');
   const [targetChannel, setTargetChannel] = React.useState(operator.installation.currentChannel);
 
@@ -48,7 +46,7 @@ export const UpgradeApprovalCard: React.FC<UpgradeApprovalCardProps> = ({
       targetChannel,
       targetVersion,
     });
-    alert(t('approvalFunctionalityComingSoon'));
+    alert('Approval functionality coming soon');
   };
 
   const handlePreviewUpdate = () => {
@@ -57,7 +55,7 @@ export const UpgradeApprovalCard: React.FC<UpgradeApprovalCardProps> = ({
       targetChannel,
       targetVersion,
     });
-    alert(t('previewUpdateComingSoon'));
+    alert('Preview update functionality coming soon');
   };
 
   return (
@@ -67,7 +65,7 @@ export const UpgradeApprovalCard: React.FC<UpgradeApprovalCardProps> = ({
         <Alert
           variant="info"
           isInline
-          title={t('newVersionAvailable')}
+          title="New Version Available"
           customIcon={<InfoCircleIcon />}
           className="up-approval-alert"
         />
@@ -77,7 +75,7 @@ export const UpgradeApprovalCard: React.FC<UpgradeApprovalCardProps> = ({
           <GridItem span={12}>
             <Grid hasGutter>
               <GridItem span={4}>
-                <FormGroup label={t('currentChannel')} fieldId="current-channel">
+                <FormGroup label="Current Channel" fieldId="current-channel">
                   <div className="up-current-field-value">
                     {operator.installation.currentChannel}
                   </div>
@@ -87,7 +85,7 @@ export const UpgradeApprovalCard: React.FC<UpgradeApprovalCardProps> = ({
                 <div className="up-channel-arrow">→</div>
               </GridItem>
               <GridItem span={5}>
-                <FormGroup label={t('targetChannel')} fieldId="target-channel">
+                <FormGroup label="Target Channel" fieldId="target-channel">
                   <FormSelect
                     value={targetChannel}
                     onChange={(_event, value) => {
@@ -114,7 +112,7 @@ export const UpgradeApprovalCard: React.FC<UpgradeApprovalCardProps> = ({
           <GridItem span={12}>
             <Grid hasGutter>
               <GridItem span={4}>
-                <FormGroup label={t('currentVersion')} fieldId="current-version">
+                <FormGroup label="Current Version" fieldId="current-version">
                   <div className="up-current-field-value">
                     {operator.installation.currentVersion}
                   </div>
@@ -124,7 +122,7 @@ export const UpgradeApprovalCard: React.FC<UpgradeApprovalCardProps> = ({
                 <div className="up-channel-arrow">→</div>
               </GridItem>
               <GridItem span={5}>
-                <FormGroup label={t('targetVersion')} fieldId="target-version">
+                <FormGroup label="Target Version" fieldId="target-version">
                   <FormSelect
                     value={targetVersion}
                     onChange={(_event, value) => setTargetVersion(value)}
@@ -152,10 +150,10 @@ export const UpgradeApprovalCard: React.FC<UpgradeApprovalCardProps> = ({
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                alert(t('releaseNotesComingSoon'));
+                alert('Release notes functionality coming soon');
               }}
             >
-              {t('viewReleaseNotes')}
+              View Release Notes
             </Button>
           </GridItem>
 
@@ -166,10 +164,10 @@ export const UpgradeApprovalCard: React.FC<UpgradeApprovalCardProps> = ({
               onClick={handleApproveUpdate}
               className="up-approve-btn"
             >
-              {t('approveUpdate')}
+              Approve Update
             </Button>
             <Button variant="secondary" onClick={handlePreviewUpdate}>
-              {t('previewUpdate')}
+              Preview Update
             </Button>
           </GridItem>
         </Grid>

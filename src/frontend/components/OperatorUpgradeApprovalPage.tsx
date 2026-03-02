@@ -16,7 +16,6 @@ import {
   EmptyStateBody,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
-import { useTranslation } from 'react-i18next';
 import { apiClient } from '../services/api-client';
 import { OperatorStatus } from '../types';
 import { UpgradeApprovalCard } from './upgrade-approval/UpgradeApprovalCard';
@@ -31,7 +30,6 @@ import '../styles/operator-upgrade-approval.css';
  * Displays upgrade options, version progression, and related operators
  */
 const OperatorUpgradeApprovalPage: React.FC = () => {
-  const { t } = useTranslation();
   const { namespace, name } = useParams<{ namespace: string; name: string }>();
   const [operator, setOperator] = React.useState<OperatorStatus | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -65,7 +63,7 @@ const OperatorUpgradeApprovalPage: React.FC = () => {
         <PageSection>
           <EmptyState>
             <Spinner size="xl" />
-            <EmptyStateBody>{t('loadingOperatorDetails')}</EmptyStateBody>
+            <EmptyStateBody>Loading operator details...</EmptyStateBody>
           </EmptyState>
         </PageSection>
       </Page>
@@ -76,7 +74,7 @@ const OperatorUpgradeApprovalPage: React.FC = () => {
     return (
       <Page>
         <PageSection>
-          <Alert variant="danger" title={t('errorLoadingOperator')}>
+          <Alert variant="danger" title="Error loading operator">
             {error}
           </Alert>
         </PageSection>
@@ -90,7 +88,7 @@ const OperatorUpgradeApprovalPage: React.FC = () => {
         <PageSection>
           <EmptyState>
             <EmptyStateIcon icon={ExclamationCircleIcon} />
-            <EmptyStateBody>{t('operatorNotFound')}</EmptyStateBody>
+            <EmptyStateBody>Operator not found</EmptyStateBody>
           </EmptyState>
         </PageSection>
       </Page>
@@ -102,9 +100,9 @@ const OperatorUpgradeApprovalPage: React.FC = () => {
       {/* Page Header */}
       <PageSection variant={PageSectionVariants.light}>
         <Breadcrumb>
-          <BreadcrumbItem to="/ecosystem">{t('ecosystem')}</BreadcrumbItem>
+          <BreadcrumbItem to="/ecosystem">Ecosystem</BreadcrumbItem>
           <BreadcrumbItem to="/software-lifecycle-management">
-            {t('softwareLifecycleManagement')}
+            Software Lifecycle Management
           </BreadcrumbItem>
           <BreadcrumbItem isActive>
             {operator.installation.displayName}-v{operator.installation.currentVersion}
@@ -116,7 +114,7 @@ const OperatorUpgradeApprovalPage: React.FC = () => {
             {operator.installation.displayName}-v{operator.installation.currentVersion}
           </Title>
           <div className="up-page-header-subtitle">
-            {operator.installation.currentVersion} {t('providedBy')} {operator.installation.catalogSource}
+            {operator.installation.currentVersion} provided by {operator.installation.catalogSource}
           </div>
         </div>
       </PageSection>

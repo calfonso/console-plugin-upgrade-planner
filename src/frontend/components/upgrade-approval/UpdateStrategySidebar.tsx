@@ -10,7 +10,6 @@ import {
   Button,
 } from '@patternfly/react-core';
 import { PencilAltIcon, ExternalLinkAltIcon } from '@patternfly/react-icons';
-import { useTranslation } from 'react-i18next';
 import { OperatorStatus } from '../../types';
 import '../../styles/upgrade-approval-components.css';
 
@@ -19,25 +18,24 @@ interface UpdateStrategySidebarProps {
 }
 
 export const UpdateStrategySidebar: React.FC<UpdateStrategySidebarProps> = ({ operator }) => {
-  const { t } = useTranslation();
 
   return (
     <Card isCompact>
-      <CardTitle>{t('updateStrategy')}</CardTitle>
+      <CardTitle>Update Strategy</CardTitle>
       <CardBody>
         <DescriptionList isCompact>
           {/* Update approval */}
           <DescriptionListGroup>
-            <DescriptionListTerm>{t('updateApproval')}</DescriptionListTerm>
+            <DescriptionListTerm>Update Approval</DescriptionListTerm>
             <DescriptionListDescription>
               <div className="up-update-strategy-field">
                 <span className="up-update-strategy-value">
-                  {operator.installation.approved ? t('automatic') : t('manual')}
+                  {operator.installation.approved ? 'Automatic' : 'Manual'}
                 </span>
                 <Button
                   variant="plain"
-                  aria-label={t('editUpdateApproval')}
-                  onClick={() => alert(t('editUpdateApprovalComingSoon'))}
+                  aria-label="Edit update approval"
+                  onClick={() => alert('Edit update approval functionality coming soon')}
                   className="up-update-strategy-edit-btn"
                 >
                   <PencilAltIcon className="up-update-strategy-edit-icon" />
@@ -48,14 +46,14 @@ export const UpdateStrategySidebar: React.FC<UpdateStrategySidebarProps> = ({ op
 
           {/* Update channel */}
           <DescriptionListGroup>
-            <DescriptionListTerm>{t('updateChannel')}</DescriptionListTerm>
+            <DescriptionListTerm>Update Channel</DescriptionListTerm>
             <DescriptionListDescription>
               <div className="up-update-strategy-field">
                 <span>{operator.installation.currentChannel}</span>
                 <Button
                   variant="plain"
-                  aria-label={t('editUpdateChannel')}
-                  onClick={() => alert(t('editUpdateChannelComingSoon'))}
+                  aria-label="Edit update channel"
+                  onClick={() => alert('Edit update channel functionality coming soon')}
                   className="up-update-strategy-edit-btn"
                 >
                   <PencilAltIcon className="up-update-strategy-edit-icon" />
@@ -66,7 +64,7 @@ export const UpdateStrategySidebar: React.FC<UpdateStrategySidebarProps> = ({ op
 
           {/* Version */}
           <DescriptionListGroup>
-            <DescriptionListTerm>{t('version')}</DescriptionListTerm>
+            <DescriptionListTerm>Version</DescriptionListTerm>
             <DescriptionListDescription>
               {operator.installation.currentVersion}
             </DescriptionListDescription>
@@ -74,7 +72,7 @@ export const UpdateStrategySidebar: React.FC<UpdateStrategySidebarProps> = ({ op
 
           {/* Manage Subscription */}
           <DescriptionListGroup>
-            <DescriptionListTerm>{t('manageSubscription')}</DescriptionListTerm>
+            <DescriptionListTerm>Manage Subscription</DescriptionListTerm>
             <DescriptionListDescription>
               <Button
                 variant="link"
@@ -83,13 +81,13 @@ export const UpdateStrategySidebar: React.FC<UpdateStrategySidebarProps> = ({ op
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  alert(t('navigateToClusterManagement'));
+                  alert('Navigate to cluster management');
                 }}
                 icon={<ExternalLinkAltIcon />}
                 iconPosition="right"
                 className="up-manage-subscription-btn"
               >
-                {t('manageInOpenShiftClusterManagement')}
+                Manage in OpenShift Cluster Management
               </Button>
             </DescriptionListDescription>
           </DescriptionListGroup>

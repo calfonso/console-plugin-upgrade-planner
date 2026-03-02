@@ -1,6 +1,3 @@
-// Initialize i18n before exporting components
-import './i18n';
-
 // Expose page components for dynamic loading by console
 // The components are automatically code-split by webpack module federation
 export { default as UpgradePlannerPage } from './components/UpgradePlannerPage';

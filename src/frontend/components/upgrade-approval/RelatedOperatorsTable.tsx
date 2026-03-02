@@ -6,7 +6,6 @@ import {
   Label,
 } from '@patternfly/react-core';
 import { Table, Thead, Tbody, Tr, Th, Td } from '@patternfly/react-table';
-import { useTranslation } from 'react-i18next';
 import { OperatorStatus } from '../../types';
 import '../../styles/upgrade-approval-components.css';
 
@@ -22,7 +21,6 @@ interface RelatedOperator {
 }
 
 export const RelatedOperatorsTable: React.FC<RelatedOperatorsTableProps> = () => {
-  const { t } = useTranslation();
 
   // Mock data for demonstration - in real implementation, this would come from API
   const relatedOperators: RelatedOperator[] = [
@@ -55,15 +53,15 @@ export const RelatedOperatorsTable: React.FC<RelatedOperatorsTableProps> = () =>
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'Installed':
-        return <Label color="green">{t('relatedOperatorInstalled')}</Label>;
+        return <Label color="green">Installed</Label>;
       case 'Pending update':
         return (
           <Label color="gold" icon={<span>⚠</span>}>
-            {t('relatedOperatorPendingUpdate')}
+            Pending Update
           </Label>
         );
       case 'Not installed':
-        return <Label color="grey">{t('relatedOperatorNotInstalled')}</Label>;
+        return <Label color="grey">Not Installed</Label>;
       default:
         return <Label>{status}</Label>;
     }
@@ -71,21 +69,21 @@ export const RelatedOperatorsTable: React.FC<RelatedOperatorsTableProps> = () =>
 
   return (
     <Card className="up-related-operators-card">
-      <CardTitle>{t('relatedOperators')}</CardTitle>
+      <CardTitle>Related Operators</CardTitle>
       <CardBody>
         <Table variant="compact" borders={true}>
           <Thead>
             <Tr>
-              <Th>{t('name')}</Th>
-              <Th>{t('status')}</Th>
-              <Th>{t('version')}</Th>
-              <Th>{t('description')}</Th>
+              <Th>Name</Th>
+              <Th>Status</Th>
+              <Th>Version</Th>
+              <Th>Description</Th>
             </Tr>
           </Thead>
           <Tbody>
             {relatedOperators.map((relatedOp, index) => (
               <Tr key={`${relatedOp.name}-${index}`}>
-                <Td dataLabel={t('name')}>
+                <Td dataLabel="Name">
                   <a
                     href="#"
                     onClick={(e) => {
@@ -97,9 +95,9 @@ export const RelatedOperatorsTable: React.FC<RelatedOperatorsTableProps> = () =>
                     {relatedOp.name}
                   </a>
                 </Td>
-                <Td dataLabel={t('status')}>{getStatusLabel(relatedOp.status)}</Td>
-                <Td dataLabel={t('version')}>{relatedOp.version}</Td>
-                <Td dataLabel={t('description')}>{relatedOp.description}</Td>
+                <Td dataLabel="Status">{getStatusLabel(relatedOp.status)}</Td>
+                <Td dataLabel="Version">{relatedOp.version}</Td>
+                <Td dataLabel="Description">{relatedOp.description}</Td>
               </Tr>
             ))}
           </Tbody>

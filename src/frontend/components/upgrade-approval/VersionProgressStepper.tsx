@@ -10,7 +10,6 @@ import {
   PendingIcon,
   ExclamationCircleIcon,
 } from '@patternfly/react-icons';
-import { useTranslation } from 'react-i18next';
 import { OperatorStatus } from '../../types';
 import '../../styles/upgrade-approval-components.css';
 
@@ -26,7 +25,6 @@ interface UpgradeStep {
 }
 
 export const VersionProgressStepper: React.FC<VersionProgressStepperProps> = () => {
-  const { t } = useTranslation();
 
   // Mock data for demonstration - in real implementation, this would come from API
   const stableChannelSteps: UpgradeStep[] = [
@@ -118,7 +116,7 @@ export const VersionProgressStepper: React.FC<VersionProgressStepperProps> = () 
                 onClick={() => setShowMoreSteps(!showMoreSteps)}
                 className="up-stepper-more-button"
               >
-                {t('moreSteps', { count: 8 })}
+                +8 more
               </Button>
             </div>
 
@@ -128,7 +126,7 @@ export const VersionProgressStepper: React.FC<VersionProgressStepperProps> = () 
           {showMoreSteps && (
             <div className="up-stepper-expanded-content">
               <p className="up-stepper-expanded-text">
-                {t('additionalUpgradeStepsPlaceholder')}
+                Additional upgrade steps would be shown here in a real implementation.
               </p>
             </div>
           )}

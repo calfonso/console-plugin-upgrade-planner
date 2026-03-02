@@ -61,4 +61,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl-minimal -f http://localhost:9443/health || exit 1
 
 # Start the backend server
-CMD ["node", "dist/backend/server.js"]
+CMD ["node", "dist/backend/backend/server.js"]
